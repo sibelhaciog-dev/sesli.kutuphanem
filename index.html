@@ -311,7 +311,7 @@ body { background:var(--cream); font-family:DM Sans,sans-serif; color:var(--ink)
 
 /* ── ÖNERİ BUTONU ── */
 .oneri-wrap { padding:20px 24px; border-top:1px solid var(--border); }
-.oneri-btn { width:auto; padding:10px 20px; background:linear-gradient(135deg, #667eea, #764ba2); color:white; border:none; border-radius:50px; font-family:DM Sans,sans-serif; font-size:14px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:6px; transition:opacity .2s; }
+.oneri-btn { width:100%; padding:14px; background:linear-gradient(135deg, #667eea, #764ba2); color:white; border:none; border-radius:14px; font-family:DM Serif Display,serif; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:opacity .2s; }
 .oneri-btn:hover { opacity:.88; }
 .oneri-btn:disabled { opacity:.5; cursor:not-allowed; }
 .oneri-sonuc { margin-top:14px; padding:16px; background:var(--cream); border-radius:14px; border:1px solid var(--border); font-size:14px; line-height:1.7; color:var(--ink2); white-space:pre-wrap; }
@@ -751,31 +751,70 @@ body { background:var(--cream); font-family:DM Sans,sans-serif; color:var(--ink)
 
 <!-- DÜNYA HARİTASI POPUP -->
 <div id="dunyaPopup" style="position:fixed;inset:0;background:rgba(10,20,40,0.92);z-index:400;align-items:center;justify-content:center;padding:20px;display:none">
-  <div style="background:#0d1b2e;border-radius:24px;width:100%;max-width:560px;overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,0.5)">
-    <div style="padding:16px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #1a3a6e">
+  <div style="background:#0d4f7a;border-radius:24px;width:100%;max-width:560px;overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,0.5)">
+    <div style="padding:16px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.15)">
       <div>
         <div style="font-family:'DM Serif Display',serif;font-size:18px;color:#fff">Dünya Haritam</div>
         <div style="font-size:12px;color:#7ab8e8;margin-top:2px" id="dunyaAcikInfo">0/7 kıta keşfedildi</div>
       </div>
       <button onclick="dunyaKapat()" style="background:rgba(255,255,255,0.1);border:none;color:#fff;width:30px;height:30px;border-radius:50%;font-size:16px;cursor:pointer">✕</button>
     </div>
-    <div style="padding:16px;background:#0a1628">
-      <svg viewBox="0 0 900 460" width="100%" xmlns="http://www.w3.org/2000/svg" style="display:block;border-radius:12px">
-        <rect width="900" height="460" fill="#0d2444"/>
-        <line x1="0" y1="230" x2="900" y2="230" stroke="#1a3a6e" stroke-width="0.5"/>
-        <line x1="450" y1="0" x2="450" y2="460" stroke="#1a3a6e" stroke-width="0.5"/>
-        <ellipse cx="450" cy="230" rx="200" ry="180" fill="none" stroke="#1a3a6e" stroke-width="0.5"/>
-        <ellipse cx="450" cy="230" rx="390" ry="185" fill="none" stroke="#1a3a6e" stroke-width="0.5"/>
-        <g id="dk-kamerika"><path d="M 72 52 L 155 38 L 228 50 L 268 82 L 282 128 L 275 175 L 258 212 L 238 248 L 212 268 L 188 275 L 165 262 L 145 242 L 124 215 L 105 190 L 88 162 L 72 130 L 65 95 Z" fill="#444"/><text x="175" y="160" text-anchor="middle" font-size="11" fill="#888" font-family="sans-serif">Kuzey Amerika</text></g>
-        <g id="dk-gamerika"><path d="M 205 292 L 242 280 L 278 290 L 295 322 L 298 362 L 288 402 L 268 432 L 245 448 L 220 448 L 198 432 L 182 405 L 178 370 L 185 335 Z" fill="#444"/><text x="238" y="368" text-anchor="middle" font-size="11" fill="#888" font-family="sans-serif">Güney Amerika</text></g>
-        <g id="dk-avrupa"><path d="M 398 55 L 448 45 L 498 55 L 518 75 L 512 102 L 492 122 L 462 135 L 430 132 L 408 115 L 395 90 Z" fill="#444"/><text x="455" y="98" text-anchor="middle" font-size="11" fill="#888" font-family="sans-serif">Avrupa</text></g>
-        <g id="dk-afrika"><path d="M 405 150 L 448 138 L 492 148 L 515 175 L 522 212 L 516 252 L 498 290 L 472 325 L 445 348 L 420 352 L 395 335 L 375 305 L 362 268 L 358 228 L 365 188 L 382 162 Z" fill="#444"/><text x="440" y="255" text-anchor="middle" font-size="11" fill="#888" font-family="sans-serif">Afrika</text></g>
-        <g id="dk-asya"><path d="M 540 42 L 625 32 L 722 42 L 800 60 L 848 85 L 862 115 L 850 148 L 818 175 L 778 195 L 730 208 L 678 210 L 628 198 L 582 178 L 548 152 L 528 118 L 525 80 Z" fill="#444"/><text x="690" y="125" text-anchor="middle" font-size="12" fill="#888" font-family="sans-serif">Asya</text></g>
-        <g id="dk-avustralya"><path d="M 695 298 L 748 282 L 808 290 L 845 318 L 855 352 L 842 385 L 812 408 L 772 415 L 732 405 L 700 380 L 682 348 L 685 318 Z" fill="#444"/><text x="770" y="350" text-anchor="middle" font-size="11" fill="#888" font-family="sans-serif">Avustralya</text></g>
-        <g id="dk-antartika"><path d="M 130 440 L 300 428 L 480 424 L 660 428 L 820 436 L 860 448 L 860 460 L 130 460 Z" fill="#444"/><text x="490" y="448" text-anchor="middle" font-size="11" fill="#888" font-family="sans-serif">Antarktika</text></g>
+    <div style="padding:16px;background:#1a6fa8">
+      <svg viewBox="0 0 900 460" width="100%" xmlns="http://www.w3.org/2000/svg" style="display:block;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,0.3)">
+        <!-- Okyanus arka planı -->
+        <defs>
+          <radialGradient id="okyanusGrad" cx="50%" cy="50%" r="70%">
+            <stop offset="0%" stop-color="#2196a8"/>
+            <stop offset="100%" stop-color="#0d4f7a"/>
+          </radialGradient>
+        </defs>
+        <rect width="900" height="460" fill="url(#okyanusGrad)" rx="12"/>
+        <!-- Dalga çizgileri -->
+        <path d="M0 380 Q225 365 450 380 Q675 395 900 380" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="2"/>
+        <path d="M0 400 Q225 385 450 400 Q675 415 900 400" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="2"/>
+        <!-- Kıtalar: kilitli = gri tonlu, açık = canlı renkler -->
+        <g id="dk-kamerika">
+          <path d="M 72 52 L 155 38 L 228 50 L 268 82 L 282 128 L 275 175 L 258 212 L 238 248 L 212 268 L 188 275 L 165 262 L 145 242 L 124 215 L 105 190 L 88 162 L 72 130 L 65 95 Z" fill="#c8cdd6" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+          <text x="170" y="148" text-anchor="middle" font-size="9" fill="#8899aa" font-family="sans-serif" font-weight="600">Kuzey</text>
+          <text x="170" y="162" text-anchor="middle" font-size="9" fill="#8899aa" font-family="sans-serif" font-weight="600">Amerika</text>
+          <text x="170" y="185" text-anchor="middle" font-size="16">🔒</text>
+        </g>
+        <g id="dk-gamerika">
+          <path d="M 205 292 L 242 280 L 278 290 L 295 322 L 298 362 L 288 402 L 268 432 L 245 448 L 220 448 L 198 432 L 182 405 L 178 370 L 185 335 Z" fill="#c8cdd6" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+          <text x="238" y="355" text-anchor="middle" font-size="9" fill="#8899aa" font-family="sans-serif" font-weight="600">Güney</text>
+          <text x="238" y="368" text-anchor="middle" font-size="9" fill="#8899aa" font-family="sans-serif" font-weight="600">Amerika</text>
+          <text x="238" y="390" text-anchor="middle" font-size="16">🔒</text>
+        </g>
+        <g id="dk-avrupa">
+          <path d="M 398 55 L 448 45 L 498 55 L 518 75 L 512 102 L 492 122 L 462 135 L 430 132 L 408 115 L 395 90 Z" fill="#c8cdd6" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+          <text x="455" y="90" text-anchor="middle" font-size="9" fill="#8899aa" font-family="sans-serif" font-weight="600">Avrupa</text>
+          <text x="455" y="110" text-anchor="middle" font-size="14">🔒</text>
+        </g>
+        <g id="dk-afrika">
+          <path d="M 405 150 L 448 138 L 492 148 L 515 175 L 522 212 L 516 252 L 498 290 L 472 325 L 445 348 L 420 352 L 395 335 L 375 305 L 362 268 L 358 228 L 365 188 L 382 162 Z" fill="#c8cdd6" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+          <text x="440" y="242" text-anchor="middle" font-size="9" fill="#8899aa" font-family="sans-serif" font-weight="600">Afrika</text>
+          <text x="440" y="265" text-anchor="middle" font-size="16">🔒</text>
+        </g>
+        <g id="dk-asya">
+          <path d="M 540 42 L 625 32 L 722 42 L 800 60 L 848 85 L 862 115 L 850 148 L 818 175 L 778 195 L 730 208 L 678 210 L 628 198 L 582 178 L 548 152 L 528 118 L 525 80 Z" fill="#c8cdd6" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+          <text x="690" y="120" text-anchor="middle" font-size="10" fill="#8899aa" font-family="sans-serif" font-weight="600">Asya</text>
+          <text x="690" y="142" text-anchor="middle" font-size="16">🔒</text>
+        </g>
+        <g id="dk-avustralya">
+          <path d="M 695 298 L 748 282 L 808 290 L 845 318 L 855 352 L 842 385 L 812 408 L 772 415 L 732 405 L 700 380 L 682 348 L 685 318 Z" fill="#c8cdd6" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+          <text x="768" y="340" text-anchor="middle" font-size="9" fill="#8899aa" font-family="sans-serif" font-weight="600">Avustralya</text>
+          <text x="768" y="362" text-anchor="middle" font-size="14">🔒</text>
+        </g>
+        <g id="dk-antartika">
+          <path d="M 130 440 L 300 428 L 480 424 L 660 428 L 820 436 L 860 448 L 860 460 L 130 460 Z" fill="#c8cdd6" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+          <text x="490" y="447" text-anchor="middle" font-size="9" fill="#8899aa" font-family="sans-serif" font-weight="600">Antarktika 🔒</text>
+        </g>
+        <!-- İlerleme ipucu -->
+        <rect x="340" y="198" width="220" height="26" rx="13" fill="rgba(0,0,0,0.35)"/>
+        <text x="450" y="216" text-anchor="middle" font-size="11" fill="rgba(255,255,255,0.8)" font-family="sans-serif" id="haritaIpucu">Her 5 kitapta yeni bir kıta açılır! 🌟</text>
       </svg>
     </div>
-    <div style="padding:12px 16px;display:flex;flex-wrap:wrap;gap:6px;border-top:1px solid #1a3a6e" id="dunyaBadgeler"></div>
+    <div style="padding:12px 16px;display:flex;flex-wrap:wrap;gap:6px;border-top:1px solid rgba(255,255,255,0.15)" id="dunyaBadgeler"></div>
   </div>
 </div>
 
@@ -1690,7 +1729,12 @@ function yildizKoy(e, link, sayi) {
   e.stopPropagation();
   if (!okumalar[link]) okumalar[link] = { okundu: false, yildiz: 0 };
   okumalar[link].yildiz = okumalar[link].yildiz === sayi ? 0 : sayi;
-  if (sayi > 0) okumalar[link].okundu = true;
+  if (sayi > 0) {
+    okumalar[link].okundu = true;
+    if (!okumalar[link].tarih) {
+      okumalar[link].tarih = new Date().toISOString().slice(0, 10);
+    }
+  }
   saveState();
   render();
 }
@@ -1722,10 +1766,13 @@ function yildizKoyModal(sayi) {
   saveState();
   gunceleModalOkuma();
   render();
-  // İlk kez yıldız veriliyorsa scratch card aç
+  // Her 5 yeni yıldızlı kitapta bir scratch card aç
   var yeniYildiz = okumalar[link].yildiz;
   if (yeniYildiz > 0 && eskiYildiz === 0 && siradakiKita()) {
-    setTimeout(() => scratchAc(activeKitap.ad), 300);
+    var toplamYildizli = Object.values(okumalar).filter(function(o){ return o.yildiz > 0; }).length;
+    if (toplamYildizli % 5 === 0) {
+      setTimeout(() => scratchAc(activeKitap.ad), 300);
+    }
   }
 }
 
@@ -2335,9 +2382,23 @@ function kitayiHaritadaAc(kita) {
   const info = KITA_INFO[kita];
   if (!el) return;
   const path = el.querySelector('path');
-  const text = el.querySelector('text');
-  if (path) { path.style.fill = info.renk; path.style.transition='fill 0.6s'; }
-  if (text) { text.style.fill = '#fff'; }
+  if (path) {
+    path.style.fill = info.renk;
+    path.style.transition = 'fill 0.8s';
+    path.style.filter = 'drop-shadow(0 0 8px ' + info.renk + '88)';
+  }
+  // Tüm text elementlerini güncelle (isim + kilit emojisi)
+  const texts = el.querySelectorAll('text');
+  texts.forEach((t, i) => {
+    if (i === texts.length - 1) {
+      // Son text = kilit emojisi → kıta emojisiyle değiştir
+      t.textContent = info.emoji;
+      t.style.fill = '#fff';
+    } else {
+      t.style.fill = 'rgba(255,255,255,0.95)';
+      t.style.fontWeight = '700';
+    }
+  });
   dunyaBadgeGuncelle();
 }
 
@@ -2363,6 +2424,20 @@ function scratchKapat() {
 function dunyaPopupAc() {
   acikKitalar.forEach(k => kitayiHaritadaAc(k));
   dunyaBadgeGuncelle();
+  // İpucu metnini güncelle
+  const toplamYildizli = Object.values(okumalar).filter(o => o.yildiz > 0).length;
+  const sonrakiHedef = (Math.floor(toplamYildizli / 5) + 1) * 5;
+  const kalan = sonrakiHedef - toplamYildizli;
+  const ipucu = document.getElementById('haritaIpucu');
+  if (ipucu) {
+    if (acikKitalar.length >= 7) {
+      ipucu.textContent = '🏆 Tüm kıtaları keşfettin!';
+    } else if (kalan === 0) {
+      ipucu.textContent = '🌟 Yeni kıta kazanmaya hazırsın!';
+    } else {
+      ipucu.textContent = kalan + ' kitap daha → yeni kıta açılır! 🌟';
+    }
+  }
   const p = document.getElementById('dunyaPopup');
   p.style.display = 'flex';
   document.body.style.overflow = 'hidden';
@@ -2905,10 +2980,13 @@ function takvimCiz() {
     if (okunanlar) { bg = '#FFF0E8'; renk = '#E8602C'; border = '#E8602C'; font = '700'; }
     if (bugün) { border = '#185FA5'; }
 
+    const kitapOzet = okunanlar ? (okunanlar.length === 1
+      ? okunanlar[0].slice(0, 12) + (okunanlar[0].length > 12 ? '…' : '')
+      : okunanlar.length + ' kitap') : '';
     html += `<div onclick="takvimGunSec('${tarih}',${JSON.stringify(okunanlar||[]).replace(/'/g,'&apos;')})"
-      style="aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:8px;cursor:${okunanlar?'pointer':'default'};border:1.5px solid ${border};background:${bg};color:${renk};font-weight:${font};font-size:13px;transition:all .15s;position:relative">
+      style="aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:8px;cursor:${okunanlar?'pointer':'default'};border:1.5px solid ${border};background:${bg};color:${renk};font-weight:${font};font-size:13px;transition:all .15s;position:relative;padding:2px">
       <span>${gun}</span>
-      ${sayi > 0 ? `<span style="font-size:8px;line-height:1;margin-top:1px">${sayi > 1 ? sayi+'📚' : '📖'}</span>` : ''}
+      ${sayi > 0 ? `<span style="font-size:7px;line-height:1.2;margin-top:2px;text-align:center;word-break:break-all;overflow:hidden;max-height:28px;opacity:.85">${kitapOzet}</span>` : ''}
     </div>`;
   }
   const _tg = document.getElementById('takvimGrid'); if (_tg) _tg.innerHTML = html;
