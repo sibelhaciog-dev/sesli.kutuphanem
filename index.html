@@ -524,6 +524,9 @@ body { background:var(--cream); font-family:DM Sans,sans-serif; color:var(--ink)
 .ob-ilerleme-dot.aktif { background:var(--accent); }
 .ob-profil-onizleme { display:flex;flex-direction:column;gap:10px;margin-bottom:20px; }
 .ob-profil-kart { display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--cream);border-radius:12px;border:1px solid var(--border); }
+.ob-ilgi-btn { padding:7px 12px;border:1.5px solid var(--border);border-radius:50px;background:none;font-family:DM Sans,sans-serif;font-size:12px;color:var(--ink2);cursor:pointer;transition:all .15s; }
+.ob-ilgi-btn:hover { border-color:var(--accent);color:var(--accent); }
+.ob-ilgi-btn.secili { background:var(--accent-light);border-color:var(--accent);color:var(--accent);font-weight:600; }
 .ob-profil-avatar { width:40px;height:40px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:20px; }
 </style>
 </head>
@@ -611,8 +614,8 @@ body { background:var(--cream); font-family:DM Sans,sans-serif; color:var(--ink)
       </div>
 
       <div class="ob-input-wrap">
-        <label>Doğum Yılı *</label>
-        <input class="ob-input" type="number" id="obDogumYili" placeholder="Örn: 2019" min="2000" max="2024"/>
+        <label>Doğum Tarihi *</label>
+        <input class="ob-input" type="date" id="obDogumTarihi" max="2025-12-31" min="2000-01-01"/>
       </div>
 
       <div class="ob-input-wrap">
@@ -620,6 +623,39 @@ body { background:var(--cream); font-family:DM Sans,sans-serif; color:var(--ink)
         <div class="ob-cinsiyet">
           <button class="ob-c-btn" id="obKiz" onclick="obCinsiyetSec('kiz')">👧 Kız</button>
           <button class="ob-c-btn" id="obErkek" onclick="obCinsiyetSec('erkek')">👦 Erkek</button>
+        </div>
+      </div>
+
+      <div class="ob-input-wrap">
+        <label>Öncelikli Rehberlik Alanı</label>
+        <select class="ob-input" id="obRehberlik">
+          <option value="">Seç (isteğe bağlı)</option>
+          <option value="duygu">❤️ Duygu Yönetimi</option>
+          <option value="ozguven">⭐ Özgüven Gelişimi</option>
+          <option value="sosyal">🤝 Sosyal Beceriler</option>
+          <option value="okul">📚 Okul Uyumu</option>
+          <option value="kardes">👶 Kardeş İlişkileri</option>
+          <option value="kaygi">🌿 Kaygı ve Korku</option>
+          <option value="farklilik">🌈 Farklılıklara Saygı</option>
+          <option value="yaraticilik">🎨 Yaratıcılık</option>
+        </select>
+      </div>
+
+      <div class="ob-input-wrap">
+        <label>İlgi Alanları <span style="font-weight:400;text-transform:none;font-size:11px;color:var(--muted)">(birden fazla seçebilirsin)</span></label>
+        <div style="display:flex;flex-wrap:wrap;gap:8px" id="obIlgiGrid">
+          <button class="ob-ilgi-btn" onclick="obIlgiToggle(this,'Hayvanlar')">🐾 Hayvanlar</button>
+          <button class="ob-ilgi-btn" onclick="obIlgiToggle(this,'Uzay')">🚀 Uzay</button>
+          <button class="ob-ilgi-btn" onclick="obIlgiToggle(this,'Doğa')">🌿 Doğa</button>
+          <button class="ob-ilgi-btn" onclick="obIlgiToggle(this,'Müzik')">🎵 Müzik</button>
+          <button class="ob-ilgi-btn" onclick="obIlgiToggle(this,'Spor')">⚽ Spor</button>
+          <button class="ob-ilgi-btn" onclick="obIlgiToggle(this,'Sanat')">🎨 Sanat</button>
+          <button class="ob-ilgi-btn" onclick="obIlgiToggle(this,'Matematik')">🔢 Matematik</button>
+          <button class="ob-ilgi-btn" onclick="obIlgiToggle(this,'Bilim')">🔬 Bilim</button>
+          <button class="ob-ilgi-btn" onclick="obIlgiToggle(this,'Macera')">🗺️ Macera</button>
+          <button class="ob-ilgi-btn" onclick="obIlgiToggle(this,'Peri Masalları')">🧚 Peri Masalları</button>
+          <button class="ob-ilgi-btn" onclick="obIlgiToggle(this,'Dinozorlar')">🦕 Dinozorlar</button>
+          <button class="ob-ilgi-btn" onclick="obIlgiToggle(this,'Araçlar')">🚗 Araçlar</button>
         </div>
       </div>
 
@@ -3917,7 +3953,10 @@ function obCocukFormuGuncelle() {
 
   // Formu sıfırla
   document.getElementById('obCocukAd').value = '';
-  document.getElementById('obDogumYili').value = '';
+  document.getElementById('obDogumTarihi').value = '';
+  document.getElementById('obRehberlik').value = '';
+  obSecilenIlgiler = new Set();
+  document.querySelectorAll('.ob-ilgi-btn').forEach(b => b.classList.remove('secili'));
   obSecilenCinsiyet = '';
   document.getElementById('obKiz').classList.remove('secili');
   document.getElementById('obErkek').classList.remove('secili');
@@ -3934,30 +3973,54 @@ function obCinsiyetSec(c) {
   document.getElementById('obErkek').classList.toggle('secili', c === 'erkek');
 }
 
+let obSecilenIlgiler = new Set();
+
+function obIlgiToggle(btn, ilgi) {
+  if (obSecilenIlgiler.has(ilgi)) {
+    obSecilenIlgiler.delete(ilgi);
+    btn.classList.remove('secili');
+  } else {
+    obSecilenIlgiler.add(ilgi);
+    btn.classList.add('secili');
+  }
+}
+
 async function obCocukKaydet() {
   const ad = document.getElementById('obCocukAd').value.trim();
-  const dogumYili = document.getElementById('obDogumYili').value;
+  const dogumTarihi = document.getElementById('obDogumTarihi').value;
 
   if (!ad) { obHataGoster('Çocuğun adını gir.'); return; }
-  if (!dogumYili || dogumYili < 2000 || dogumYili > 2025) {
-    obHataGoster('Geçerli bir doğum yılı gir (2000-2025)'); return;
-  }
+  if (!dogumTarihi) { obHataGoster('Doğum tarihini gir.'); return; }
 
   const btn = document.getElementById('obCocukIleri');
   btn.disabled = true; btn.textContent = 'Kaydediliyor...';
 
-  const yas = new Date().getFullYear() - parseInt(dogumYili);
+  const dogumYili = parseInt(dogumTarihi.split('-')[0]);
+  const yas = new Date().getFullYear() - dogumYili;
   const yasGrup = yas <= 2 ? '0' : yas <= 4 ? '2' : yas <= 6 ? '4' : yas <= 9 ? '7' : '10';
   const avatar = obSecilenCinsiyet === 'kiz' ? '👧' : obSecilenCinsiyet === 'erkek' ? '👦' : '🧒';
 
+  const rehberlik = document.getElementById('obRehberlik').value;
+
   // Supabase'e kaydet
-  const { error } = await _sb.from('children').insert({
+  const { data: cocukData, error } = await _sb.from('children').insert({
     user_id: currentUser.id,
     name: ad,
-    birth_year: parseInt(dogumYili),
+    birth_year: dogumYili,
+    birth_date: dogumTarihi,
     gender: obSecilenCinsiyet || 'belirtilmedi',
-    avatar: avatar
-  });
+    avatar: avatar,
+    priority_guidance: rehberlik || null
+  }).select().single();
+
+  // İlgi alanlarını kaydet
+  if (!error && cocukData && obSecilenIlgiler.size > 0) {
+    const ilgiRows = Array.from(obSecilenIlgiler).map(ilgi => ({
+      child_id: cocukData.id,
+      interest_name: ilgi
+    }));
+    await _sb.from('child_interests').insert(ilgiRows);
+  }
 
   btn.disabled = false;
 
@@ -4022,4 +4085,4 @@ authEkraniGizle = async function() {
 
 </script>
 </body>
-</html>  
+</html>
