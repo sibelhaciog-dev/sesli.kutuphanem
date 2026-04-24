@@ -556,6 +556,25 @@ body { background:var(--cream); font-family:DM Sans,sans-serif; color:var(--ink)
 .ob-sira-item.dragging { opacity:.35;border-style:dashed;cursor:grabbing; }
 .ob-sira-item.drag-over { border-color:var(--accent);background:var(--accent-light); }
 .ob-sira-num { background:var(--accent);color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-left:auto; }
+
+/* AI Danışman */
+.ai-mesaj { display:flex;gap:10px;align-items:flex-start; }
+.ai-mesaj-bot { flex-direction:row; }
+.ai-mesaj-user { flex-direction:row-reverse; }
+.ai-avatar { width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#6a0dad,#c040e0);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0; }
+.ai-bubble { max-width:85%;padding:10px 14px;border-radius:16px;font-size:13px;line-height:1.6;color:var(--ink); }
+.ai-mesaj-bot .ai-bubble { background:#f5f0ff;border-radius:4px 16px 16px 16px; }
+.ai-mesaj-user .ai-bubble { background:linear-gradient(135deg,#6a0dad,#c040e0);color:#fff;border-radius:16px 4px 16px 16px; }
+.ai-hizli-btn { white-space:nowrap;padding:6px 12px;border:1.5px solid #e0d0f0;border-radius:20px;background:#fff;font-family:DM Sans,sans-serif;font-size:12px;color:#6a0dad;cursor:pointer;transition:all .15s; }
+.ai-hizli-btn:hover { background:#f5f0ff;border-color:#6a0dad; }
+.ai-kitap-kart { display:flex;gap:10px;padding:10px 12px;background:#fff;border:1.5px solid #e8d8f8;border-radius:12px;margin-top:6px;cursor:pointer;transition:all .15s; }
+.ai-kitap-kart:hover { border-color:#6a0dad;background:#faf5ff; }
+.ai-kitap-kart img { width:40px;height:56px;object-fit:cover;border-radius:6px;flex-shrink:0; }
+.ai-yazıyor { display:flex;gap:4px;align-items:center;padding:8px 14px; }
+.ai-yazıyor span { width:8px;height:8px;border-radius:50%;background:#c040e0;animation:aiPulse 1.2s ease-in-out infinite; }
+.ai-yazıyor span:nth-child(2) { animation-delay:.2s; }
+.ai-yazıyor span:nth-child(3) { animation-delay:.4s; }
+@keyframes aiPulse { 0%,80%,100%{transform:scale(.7);opacity:.5} 40%{transform:scale(1);opacity:1} }
 </style>
 </head>
 <body>
@@ -813,14 +832,12 @@ body { background:var(--cream); font-family:DM Sans,sans-serif; color:var(--ink)
 
 <input type="file" id="gorselInput" accept="image/*" style="display:none">
 
-    <div style="padding:24px">
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:4px">
+    <div style="padding:20px">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px">
         <h2 style="font-family:DM Serif Display,serif;font-size:16px;margin:0">✨ Kitap Önerisi</h2>
-        <button class="oneri-btn" id="oneriBtn" onclick="oneriUret()">✨ Öneri Üret</button>
+        <button class="oneri-btn" id="oneriBtn" onclick="aiDanismanAc()">📖 Kitap Danışmanı</button>
       </div>
-      <p style="color:var(--muted);font-size:14px;margin-bottom:12px">Okuduğunuz ve beğendiğiniz kitaplara göre öneri üretiyoruz.</p>
-      <div id="oneriOzetBox" style="margin-bottom:16px;padding:14px;background:var(--cream);border-radius:12px;font-size:13px;color:var(--ink2);display:none"></div>
-      <div class="oneri-sonuc" id="oneriSonuc" style="display:none"></div>
+      <p style="color:var(--muted);font-size:13px;margin-bottom:0">Çocuğunuzla ilgili bir konu yazın, size özel kitap önerelim.</p>
     </div>
   </div>
 </div>
@@ -1342,6 +1359,53 @@ body { background:var(--cream); font-family:DM Sans,sans-serif; color:var(--ink)
         <div style="font-size:11px;color:#aaa">gün seri</div>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- AI DANIŞMAN POPUP -->
+<div id="aiDanismanPopup" style="display:none;position:fixed;inset:0;background:rgba(10,5,20,0.85);backdrop-filter:blur(8px);z-index:600;align-items:flex-end;justify-content:center;padding:0">
+  <div style="background:#fff;border-radius:28px 28px 0 0;width:100%;max-width:600px;height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 -16px 60px rgba(0,0,0,.2)">
+    
+    <!-- Başlık -->
+    <div style="background:linear-gradient(135deg,#6a0dad,#c040e0);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
+      <div>
+        <div style="font-family:'DM Serif Display',serif;font-size:18px;color:#fff">📖 Kitap Danışmanı</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.75);margin-top:1px" id="aiProfilBilgi">Profilinize özel öneriler</div>
+      </div>
+      <button onclick="aiDanismanKapat()" style="background:rgba(255,255,255,.2);border:none;color:#fff;width:32px;height:32px;border-radius:50%;font-size:16px;cursor:pointer;font-weight:bold">✕</button>
+    </div>
+
+    <!-- Sohbet alanı -->
+    <div id="aiSohbet" style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px">
+      <!-- Karşılama mesajı -->
+      <div class="ai-mesaj ai-mesaj-bot">
+        <div class="ai-avatar">📚</div>
+        <div class="ai-bubble">
+          Merhaba! Ben Sesli Kütüphanem'in AI kitap danışmanıyım. 👋<br><br>
+          Çocuğunuzla ilgili bir durumu veya ihtiyacı benimle paylaşın — <strong>196 kitap</strong> arasından size özel öneriler yapayım.<br><br>
+          <em>Örneğin: "Kızım karanlıktan çok korkuyor", "Oğlum yeni kardeşine alışmakta zorlanıyor"...</em>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hızlı sorular -->
+    <div id="aiHizliSorular" style="padding:0 16px 8px;display:flex;gap:6px;overflow-x:auto;flex-shrink:0">
+      <button class="ai-hizli-btn" onclick="aiHizliSor(this)">😨 Ölüm kaygısı</button>
+      <button class="ai-hizli-btn" onclick="aiHizliSor(this)">👶 Yeni kardeş</button>
+      <button class="ai-hizli-btn" onclick="aiHizliSor(this)">🏫 Okul korkusu</button>
+      <button class="ai-hizli-btn" onclick="aiHizliSor(this)">😤 Öfke kontrolü</button>
+      <button class="ai-hizli-btn" onclick="aiHizliSor(this)">😢 Ayrılık kaygısı</button>
+      <button class="ai-hizli-btn" onclick="aiHizliSor(this)">🌈 Farklılıklara saygı</button>
+    </div>
+
+    <!-- Mesaj giriş alanı -->
+    <div style="padding:12px 16px 20px;border-top:1px solid #f0f0f0;flex-shrink:0;background:#fff">
+      <div style="display:flex;gap:8px;align-items:flex-end">
+        <textarea id="aiMesajInput" placeholder="Çocuğunuzla ilgili bir durumu yazın..." rows="2" style="flex:1;border:1.5px solid #e0e0e0;border-radius:16px;padding:10px 14px;font-family:DM Sans,sans-serif;font-size:14px;resize:none;outline:none;line-height:1.4" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();aiGonder()}" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
+        <button onclick="aiGonder()" id="aiGonderBtn" style="width:44px;height:44px;background:linear-gradient(135deg,#6a0dad,#c040e0);border:none;border-radius:50%;color:#fff;font-size:20px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center">↑</button>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -3887,7 +3951,7 @@ async function kapakClaudeaTanit(base64Data, mediaType) {
   try {
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'anthropic-dangerous-direct-browser-access': 'true' },
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
         max_tokens: 500,
@@ -4616,6 +4680,160 @@ profilDuzenleAc = async function(supabaseId, ad, idx) {
     }
   }, 100);
 };
+
+
+// ── AI DANIŞMAN ──
+function aiDanismanAc() {
+  const popup = document.getElementById('aiDanismanPopup');
+  popup.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  // Profil bilgisini göster
+  if (profiles[activeChild]) {
+    const p = profiles[activeChild];
+    const yas = p.birth_year ? new Date().getFullYear() - p.birth_year : null;
+    document.getElementById('aiProfilBilgi').textContent =
+      p.name + (yas ? ' · ' + yas + ' yaş' : '') + ' için öneriler';
+  }
+}
+
+function aiDanismanKapat() {
+  document.getElementById('aiDanismanPopup').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function aiHizliSor(btn) {
+  document.getElementById('aiMesajInput').value = btn.textContent.trim().replace(/^[^\s]+\s/, '');
+  document.getElementById('aiHizliSorular').style.display = 'none';
+  aiGonder();
+}
+
+async function aiGonder() {
+  const input = document.getElementById('aiMesajInput');
+  const mesaj = input.value.trim();
+  if (!mesaj) return;
+
+  input.value = '';
+  input.style.height = 'auto';
+  document.getElementById('aiGonderBtn').disabled = true;
+
+  // Kullanıcı mesajını ekle
+  aiMesajEkle(mesaj, 'user');
+  document.getElementById('aiHizliSorular').style.display = 'none';
+
+  // Yazıyor göstergesi
+  const yaziyorId = 'yazıyor-' + Date.now();
+  aiYaziyorEkle(yaziyorId);
+
+  try {
+    // Profil bilgisi
+    const profil = profiles[activeChild] || {};
+    const yas = profil.birth_year ? new Date().getFullYear() - profil.birth_year : null;
+    const ilgiler = (profil.ilgiler || []).join(', ') || 'belirtilmedi';
+    const rehberlik = profil.priority_guidance || 'belirtilmedi';
+
+    // Kitap listesini hazırla - sadece adı, yazarı, yaş grubu, özet
+    const kitapSatirlar2 = []; KITAPLAR.forEach(function(k,i){ kitapSatirlar2.push(i+'|'+( k.ad||'')); }); const kitapListesi = kitapSatirlar2.join(', ');
+
+    // Sistem promptu hazırla
+    const sistemPrompt = 'Sen Sesli Kutuphanem AI kitap danismanisın. Türkçe konuş. '
+      + 'Çocuk: ' + (profil.name||'Çocuk') + ', ' + (yas ? yas + ' yaş, ' : '') 
+      + 'ilgi alanları: ' + ilgiler + ', öncelik: ' + rehberlik + '. '
+      + 'Sadece şu listedeki kitapları öner, başka kitap uydurma. '
+      + 'JSON formatında yanıt ver: {"mesaj":"açıklama","oneriler":[{"index":0,"neden":"..."}]} '
+      + 'Maks 4 öneri. KİTAPLAR: ' + kitapListesi;
+
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 1000,
+        system: sistemPrompt,
+        messages: [{ role: 'user', content: mesaj }]
+      })
+    });
+
+    const data = await response.json();
+    if (data.error) throw new Error(data.error.message || 'API hatası');
+    if (!data.content || !data.content[0]) throw new Error('Boş yanıt geldi');
+    let text = data.content[0].text.replace(/```json|```/g, '').trim();
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error('JSON formatı hatalı: ' + text.substring(0,100));
+    const yanit = JSON.parse(jsonMatch[0]);
+
+    // Yazıyor göstergesini kaldır
+    document.getElementById(yaziyorId)?.remove();
+
+    // Bot mesajını ekle
+    let html = '<div style="margin-bottom:8px">' + yanit.mesaj + '</div>';
+    if (yanit.oneriler && yanit.oneriler.length > 0) {
+      yanit.oneriler.forEach(o => {
+        const k = KITAPLAR[o.index];
+        if (!k) return;
+        const resim = k.resim && k.resim !== '-' ? k.resim : '';
+        html += `<div class="ai-kitap-kart" onclick="aiKitabaGit(${o.index})">
+          <div style="width:40px;height:56px;border-radius:6px;background:#f0e8ff;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">
+            ${resim ? '<img src="'+resim+'" style="width:100%;height:100%;object-fit:cover;border-radius:6px">' : '📚'}
+          </div>
+          <div style="flex:1;min-width:0">
+            <div style="font-weight:600;font-size:13px;color:var(--ink);margin-bottom:2px">${k.ad}</div>
+            <div style="font-size:11px;color:#6a0dad;margin-bottom:3px">${k.yas_grup||''}</div>
+            <div style="font-size:11px;color:var(--muted);line-height:1.4">${o.neden}</div>
+          </div>
+        </div>`;
+      });
+    }
+    aiMesajEkle(html, 'bot', true);
+
+  } catch(e) {
+    document.getElementById(yaziyorId)?.remove();
+    console.error('AI hata:', e);
+    aiMesajEkle('Üzgünüm, bir hata oluştu: ' + e.message + ' Tekrar dener misiniz? 🙏', 'bot');
+  }
+
+  document.getElementById('aiGonderBtn').disabled = false;
+}
+
+function aiMesajEkle(icerik, tip, htmlMi) {
+  const sohbet = document.getElementById('aiSohbet');
+  const div = document.createElement('div');
+  div.className = 'ai-mesaj ai-mesaj-' + (tip === 'user' ? 'user' : 'bot');
+  const avatar = tip === 'user' ? (profiles[activeChild]?.avatar || '👤') : '📚';
+  if (htmlMi) {
+    div.innerHTML = '<div class="ai-avatar">' + avatar + '</div><div class="ai-bubble">' + icerik + '</div>';
+  } else {
+    div.innerHTML = '<div class="ai-avatar">' + (tip === 'user' ? (profiles[activeChild]?.avatar || '👤') : '📚') + '</div><div class="ai-bubble"></div>';
+    div.querySelector('.ai-bubble').textContent = icerik;
+  }
+  sohbet.appendChild(div);
+  sohbet.scrollTop = sohbet.scrollHeight;
+}
+
+function aiYaziyorEkle(id) {
+  const sohbet = document.getElementById('aiSohbet');
+  const div = document.createElement('div');
+  div.className = 'ai-mesaj ai-mesaj-bot';
+  div.id = id;
+  div.innerHTML = '<div class="ai-avatar">📚</div><div class="ai-bubble"><div class="ai-yazıyor"><span></span><span></span><span></span></div></div>';
+  sohbet.appendChild(div);
+  sohbet.scrollTop = sohbet.scrollHeight;
+}
+
+function aiKitabaGit(index) {
+  const k = KITAPLAR[index];
+  if (!k) return;
+  aiDanismanKapat();
+  // Kitap modalını aç
+  setTimeout(() => modalAc(k), 300);
+}
+
+// Popup dışına tıklayınca kapat
+document.getElementById('aiDanismanPopup').addEventListener('click', function(e) {
+  if (e.target === this) aiDanismanKapat();
+});
 
 </script>
 </body>
