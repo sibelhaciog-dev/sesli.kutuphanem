@@ -4734,13 +4734,46 @@ async function aiGonder() {
     // Kitap listesini hazırla - sadece adı, yazarı, yaş grubu, özet
     const kitapSatirlar2 = []; KITAPLAR.forEach(function(k,i){ kitapSatirlar2.push(i+'|'+( k.ad||'')); }); const kitapListesi = kitapSatirlar2.join(', ');
 
-    // Sistem promptu hazırla
-    const sistemPrompt = 'Sen Sesli Kutuphanem AI kitap danismanisın. Türkçe konuş. '
-      + 'Çocuk: ' + (profil.name||'Çocuk') + ', ' + (yas ? yas + ' yaş, ' : '') 
-      + 'ilgi alanları: ' + ilgiler + ', öncelik: ' + rehberlik + '. '
-      + 'Sadece şu listedeki kitapları öner, başka kitap uydurma. '
-      + 'JSON formatında yanıt ver: {"mesaj":"açıklama","oneriler":[{"index":0,"neden":"..."}]} '
-      + 'Maks 4 öneri. KİTAPLAR: ' + kitapListesi;
+    // Kullanıcının sorusundaki anahtar kelimelere göre kitapları ön-filtrele
+    const soruKelimeler = mesaj.toLowerCase().split(/\s+/);
+    const filtreliKitaplar = [];
+    
+    KITAPLAR.forEach(function(k, i) {
+      if (!k.ad) return;
+      // Yaş uygunluğu kontrolü
+      if (yas) {
+        const minYas = k.min_yas || 0;
+        const maxYas = k.max_yas || 99;
+        if (yas < minYas - 1 || yas > maxYas + 2) return;
+      }
+      // Konu eşleşmesi - özet + etiketlerde ara
+      const metin = ((k.ozet||'') + ' ' + (k.ad||'') + ' ' + (k.gelisim||[]).join(' ')).toLowerCase();
+      const eslesme = soruKelimeler.some(function(s) {
+        return s.length > 3 && metin.includes(s);
+      });
+      if (eslesme || filtreliKitaplar.length < 40) {
+        filtreliKitaplar.push({
+          i: i,
+          ad: (k.ad||'').substring(0,35),
+          yas: k.yas_grup||'',
+          ozet: (k.ozet||'').substring(0,80).replace(/\n/g,' ')
+        });
+      }
+    });
+
+    // Max 80 kitap gönder
+    const gonderilenKitaplar = filtreliKitaplar.slice(0, 80);
+    const kitapStr = gonderilenKitaplar.map(function(k) {
+      return k.i + ':' + k.ad + '|' + k.yas + '|' + k.ozet;
+    }).join('; ');
+
+    const sistemPrompt = 'Sen Sesli Kutuphanem kitap danismanisın. Türkçe, samimi konuş. '
+      + 'Çocuk: ' + (profil.name||'Çocuk') + (yas ? ', ' + yas + ' yaş' : '')
+      + ', ilgi alanları: ' + ilgiler + ', öncelik: ' + rehberlik + '. '
+      + 'SADECE aşağıdaki listeden öner, başka kitap uydurma. '
+      + 'Yanıt formatı kesinlikle JSON: {"mesaj":"2-3 cümle samimi açıklama","oneriler":[{"index":5,"neden":"kısa neden"}]} '
+      + 'Max 4 öneri, çocuğun yaşına uygun seç. '
+      + 'KİTAPLAR (index:ad|yaşgrubu|özet): ' + kitapStr;
 
     const response = await fetch('https://zjyhwovdxtjxljvwbtfz.supabase.co/functions/v1/clever-action', {
       method: 'POST',
